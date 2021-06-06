@@ -4,7 +4,7 @@ using UnityEngine;
 public class GridManage : MonoBehaviour
 {
 
-    const int gridx = 198 * 2;
+    const int gridx = 198;
     const int gridy = 108 * 2;
     Cell[,] grid = new Cell[gridx, gridy];
     Color[] col_grid = new Color[gridx * gridy];
@@ -34,7 +34,6 @@ public class GridManage : MonoBehaviour
         mouse_control();
     }
 
-    int frame = 0;
 
     // Update is called once per frame
     void FixedUpdate()
@@ -51,7 +50,6 @@ public class GridManage : MonoBehaviour
 
     Vector2 mouse_pos_old = new Vector2(0, 0);
     Vector2 mouse_pos_new = new Vector2(0, 0);
-    float time = 0;
     void mouse_control()
     {
 
@@ -68,16 +66,16 @@ public class GridManage : MonoBehaviour
             if (0 <= (int)(mousepos.x) && (int)(mousepos.x) < gridx && 0 <= (int)(mousepos.y) && (int)(mousepos.y) < gridy)
             {
 
-                Cell sandCell = new Cell();
-                sandCell.type = 1;
-                float brightness = Random.Range(0, 0.3f);
-                sandCell.col = new Color(212 / 255f + brightness, 175 / 255f + brightness, 55 / 255f + brightness, 1);
-
-
-               sandCell.vel = mouse_vel;
-
                 for(int i = 0; i < 10; i++)
                 {
+
+                    Cell sandCell = new Cell();
+                    sandCell.type = 1;
+                    float brightness = Random.Range(0, 0.3f);
+                    sandCell.col = new Color(212 / 255f + brightness, 175 / 255f + brightness, 55 / 255f + brightness, 1);
+
+
+                    sandCell.vel = mouse_vel;
 
                     //forget random circle for now
                     float a = Random.Range(0, 1) * 2 * Mathf.PI;
