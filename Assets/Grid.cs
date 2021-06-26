@@ -120,4 +120,14 @@ public class Grid
 
         return false;
     }
+
+    public bool check_any(int x, int y)
+    {
+        if (in_bound(x, y) && grid[x,y].type != 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
 }
