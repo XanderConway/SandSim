@@ -31,7 +31,7 @@ public class GridManage2 : MonoBehaviour
     void FixedUpdate()
     {
 
-        Cell sandCell = new Cell(new Color(0.8f, 0.6f, 0.4f, 1), 1, new Vector2(0,0));
+        SandCell sandCell = new SandCell(new Color(0.8f, 0.6f, 0.4f, 1), 1, new Vector2(0,0));
         sandCell.type = 1;
         sandCell.col = new Color(0.8f, 0.6f, 0.4f, 1);
         sandCell.vel = new Vector2(0, 0);
@@ -60,7 +60,7 @@ public class GridManage2 : MonoBehaviour
                 {
                     float brightness = Random.Range(0, 0.3f);
                     Color colour = new Color(212 / 255f + brightness, 175 / 255f + brightness, 55 / 255f + brightness, 1);
-                    Cell sandCell = new Cell(colour, 1, mouse_vel);
+                    SandCell sandCell = new SandCell(colour, 1, mouse_vel);
 
                     //forget random circle for now
                     float a = Random.Range(0, 1) * 2 * Mathf.PI;
@@ -94,7 +94,7 @@ public class GridManage2 : MonoBehaviour
                 for (int i = 0; i < 10; i++)
                 {
                     Color colour = new Color(0.2f, 0.4f, 0.8f);
-                    Cell water_cell = new Cell(colour, 2, mouse_vel);
+                    SandCell water_cell = new SandCell(colour, 2, mouse_vel);
 
                     //forget random circle for now
                     float a = Random.Range(0, 1) * 2 * Mathf.PI;
@@ -149,7 +149,7 @@ public class GridManage2 : MonoBehaviour
         texture = new Texture2D(gridx, gridy);
         texture.filterMode = FilterMode.Point;
 
-        Cell blankCell = new Cell();
+        Cell blankCell = new SandCell();
         for (int x = 0; x < gridx; x++)
         {
             for (int y = 0; y < gridy; y++)

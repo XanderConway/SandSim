@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cell
+public abstract class Cell
 {
 
     public Color col;
     public int type;
     public Vector2 vel;
     public bool updated;
+    public bool destroy_on_contact = false;
 
     // Start is called before the first frame update
     public Cell()
@@ -31,10 +32,7 @@ public class Cell
     }
 
     //Move the references space in accordance to the cells movement characteristics
-    public void move(ref Grid grid, int x, int y)
-    {
-
-    }
+    public abstract void move(ref Grid grid, int x, int y);
 
 }
 
