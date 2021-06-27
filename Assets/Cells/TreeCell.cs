@@ -29,46 +29,46 @@ public class TreeCell : Cell
     {
 
 
-        if (height < 1)
-        {
-            return;
-        }
+        //if (height < 1)
+        //{
+        //    return;
+        //}
 
-        int xsign = (int)Mathf.Sign(grow_dir.x);
-        int ysign = (int)Mathf.Sign(grow_dir.y);
+        //int xsign = (int)Mathf.Sign(grow_dir.x);
+        //int ysign = (int)Mathf.Sign(grow_dir.y);
 
-        if (xsign != 0 || ysign != 0)
-        {
-            // Will this cell grow in the x or y direction ?
-            bool grow_x = true;
+        //if (xsign != 0 || ysign != 0)
+        //{
+        //    // Will this cell grow in the x or y direction ?
+        //    bool grow_x = true;
 
-            float true_ratio = ysign == 0 ? grow_dir.x + 1 : grow_dir.x / grow_dir.y;
-            float history_ratio = grow_history.y == 0 ? grow_history.x + 1 : grow_history.x / grow_history.y;
+        //    float true_ratio = ysign == 0 ? grow_dir.x + 1 : grow_dir.x / grow_dir.y;
+        //    float history_ratio = grow_history.y == 0 ? grow_history.x + 1 : grow_history.x / grow_history.y;
 
-            if (Mathf.Abs(true_ratio) > Mathf.Abs(history_ratio))
-            {
-                grow_history.y += 1;
-                grow_x = false;
-            }
-            else
-            {
-                grow_history.x += 1;
-                grow_history.y = 0;
-            }
+        //    if (Mathf.Abs(true_ratio) > Mathf.Abs(history_ratio))
+        //    {
+        //        grow_history.y += 1;
+        //        grow_x = false;
+        //    }
+        //    else
+        //    {
+        //        grow_history.x += 1;
+        //        grow_history.y = 0;
+        //    }
 
-            if (grow_x)
-            {
-                if (grid.check(x + xsign, y, new HashSet<int> { 0 }))
-                {
-                    grid.grid[x + xsign, y] = new TreeCell(grow_dir, grow_history, height - 1, width -= 1);
-                }
-            } else
-            {
-                if (grid.check(x, y + ysign, new HashSet<int> { 0 }))
-                {
-                    grid.grid[x, y + ysign] = new TreeCell(grow_dir, grow_history, height - 1, width -= 1);
-                }
-            }
-        }
+        //    if (grow_x)
+        //    {
+        //        if (grid.check(x + xsign, y, new HashSet<int> { 0 }))
+        //        {
+        //            grid.grid[x + xsign, y] = new TreeCell(grow_dir, grow_history, height - 1, width -= 1);
+        //        }
+        //    } else
+        //    {
+        //        if (grid.check(x, y + ysign, new HashSet<int> { 0 }))
+        //        {
+        //            grid.grid[x, y + ysign] = new TreeCell(grow_dir, grow_history, height - 1, width -= 1);
+        //        }
+        //    }
+        //}
     }
 }

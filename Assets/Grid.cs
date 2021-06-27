@@ -52,7 +52,7 @@ public class Grid
     {
         if (in_bound(x1, y1) && in_bound(x2, y2))
         {
-            if (grid[x2, y2].type == 0)
+            if (grid[x2, y2].type < grid[x1, y1].type)
             {
                 grid[x1, y1].updated = true;
                 Cell temp = grid[x1, y1];
@@ -65,6 +65,8 @@ public class Grid
         return false;
     }
 
+
+    //This Method kills framerate for some reason (passing HashSet is bad)
     public bool swap(int x1, int y1, int x2, int y2, HashSet<int> types)
     {
         if (in_bound(x1, y1) && in_bound(x2, y2))
@@ -72,18 +74,16 @@ public class Grid
             if (types.Contains(grid[x2, y2].type))
             {
                 grid[x1, y1].updated = true;
-                grid[x1, y1].stilled = 0;
-                grid[x2, y2].stilled = 0;
                 Cell temp = grid[x1, y1];
                 grid[x1, y1] = grid[x2, y2];
                 grid[x2, y2] = temp;
 
-                if(grid[x2, y2].type != 0)
+                if (grid[x2, y2].type != 0)
                 {
                     check_destory_on_contact(x1, y1);
                 }
 
-                if(grid[x1, y1].type != 0)
+                if (grid[x1, y1].type != 0)
                 {
                     check_destory_on_contact(x2, y2);
                 }
@@ -113,6 +113,7 @@ public class Grid
         return false;
     }
 
+    //This methods kills frame rate (don't pass Hash)
     public bool check(int x, int y, HashSet<int> states)
     {
         if (in_bound(x, y) && states.Contains(grid[x, y].type))

@@ -53,7 +53,7 @@ public class GridManage3 : MonoBehaviour
                 {
                     float brightness = Random.Range(0, -0.1f);
                     Color colour = new Color(139 / 255f + brightness, 69 / 255f + brightness, 19 / 255f + brightness, 1);
-                    SandCell sandCell = new SandCell(colour, 1, mouse_vel);
+                    SandCell sandCell = new SandCell(colour, 2, mouse_vel);
 
                     //forget random circle for now
                     float a = Random.Range(0, 1) * 2 * Mathf.PI;
@@ -68,7 +68,7 @@ public class GridManage3 : MonoBehaviour
                     int circle_posx = x + (int)mousepos.x;
                     int circle_posy = gridy - 1 - (int)mousepos.y + y;
 
-                    if (grid.in_bound(circle_posx, circle_posy) && grid.grid[circle_posx, circle_posy].type != 1)
+                    if (grid.in_bound(circle_posx, circle_posy) && grid.grid[circle_posx, circle_posy].type != 2)
                     {
                         grid.grid[circle_posx, circle_posy] = sandCell;
                     }
@@ -98,10 +98,21 @@ public class GridManage3 : MonoBehaviour
                 int circle_posx = x + (int)mousepos.x;
                 int circle_posy = gridy - 1 - (int)mousepos.y + y;
 
-                if (grid.in_bound(circle_posx, circle_posy) && grid.grid[circle_posx, circle_posy].type != 2)
+                if (grid.in_bound(circle_posx, circle_posy) && grid.grid[circle_posx, circle_posy].type != 1)
                 {
-                    WaterCell water = new WaterCell(new Color(0.2f, 0.2f, 0.9f), 2, mouse_vel);
+                    WaterCell water = new WaterCell(new Color(0.2f, 0.2f, 0.9f), 1, mouse_vel);
                     grid.grid[circle_posx, circle_posy] = water;
+                }
+            }
+        }
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            for(int x = 0; x < gridx; x++)
+            {
+                for(int y = 0; y < gridy; y++)
+                {
+                    grid.grid[x, y] = new BlankCell();
                 }
             }
         }
@@ -149,7 +160,10 @@ public class GridManage3 : MonoBehaviour
                 {
 
                     grid.grid[r, c].vel += new Vector2(0, 0.4f);
-                    grid.grid[r, c].move(ref grid, r, c);
+                    if(grid.grid[r, c].type != 0)
+                    {
+                        grid.grid[r, c].move(ref grid, r, c);
+                    }
                 }
             }
         }

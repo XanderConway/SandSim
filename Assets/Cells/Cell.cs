@@ -10,7 +10,8 @@ public abstract class Cell
     public Vector2 vel;
     public bool updated;
     public bool destroy_on_contact = false;
-    public int stilled;
+
+    //TODO why not make the grid reference a property?
 
     // Start is called before the first frame update
     public Cell()

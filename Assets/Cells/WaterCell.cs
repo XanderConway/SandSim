@@ -33,7 +33,7 @@ public class WaterCell : Cell
             return;
         }
 
-        if(grid.check(x, y - 1, new HashSet<int> { 0 }))
+        if(!grid.check_any(x, y - 1))
         {
             this.col = this.splash_color;
         } else
@@ -147,35 +147,35 @@ public class WaterCell : Cell
 
         }
 
-        //if (xsign != 0)
-        //{
-        //    for (int movex = 0; movex < Mathf.Abs(xVel); movex += 1)
-        //    {
-        //        if (grid.swap(newx, newy, newx + xsign, newy))
-        //        {
-        //            newx += xsign;
+        if (xsign != 0)
+        {
+            for (int movex = 0; movex < Mathf.Abs(xVel); movex += 1)
+            {
+                if (grid.swap(newx, newy, newx + xsign, newy))
+                {
+                    newx += xsign;
 
 
-        //            //friction
-        //            if (grid.check(newx, newy + 1, new List<int> { 1 }))
-        //            {
+                    //friction
+                    //if (grid.check(newx, newy + 1, new HashSet<int> { 1 }))
+                    //{
 
-        //                //grid[newx, newy].vel.x -= 0.05f * xsign;
-        //                //if (Mathf.Abs(grid[newx, newy].vel.x) < 0)
-        //                //{
-        //                //    grid[newx, newy].vel.x = 0;
-        //                //}
-        //            }
-        //        }
-        //        else
-        //        {
+                        //grid[newx, newy].vel.x -= 0.05f * xsign;
+                        //if (Mathf.Abs(grid[newx, newy].vel.x) < 0)
+                        //{
+                        //    grid[newx, newy].vel.x = 0;
+                        //}
+                    //}
+                }
+                else
+                {
 
-        //            //grid.pass_velocity(newx + xsign, newy, grid.grid[newx, newy].vel * Vector2.right);
-        //            grid.grid[newx, newy].vel.x = 0;
-        //            break;
-        //        }
-        //    }
-        //}
+                    //grid.pass_velocity(newx + xsign, newy, grid.grid[newx, newy].vel * Vector2.right);
+                    grid.grid[newx, newy].vel.x = 0;
+                    break;
+                }
+            }
+        }
 
         grid.grid[newx, newy].updated = true;
     }

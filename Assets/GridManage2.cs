@@ -149,12 +149,12 @@ public class GridManage2 : MonoBehaviour
         texture = new Texture2D(gridx, gridy);
         texture.filterMode = FilterMode.Point;
 
-        Cell blankCell = new SandCell();
+        SandCell sandCell = new SandCell(new Color(0.8f, 0.6f, 0.4f, 1), 1, new Vector2(0, 0));
         for (int x = 0; x < gridx; x++)
         {
             for (int y = 0; y < gridy; y++)
             {
-                grid[x, y] = blankCell;
+                grid[x, y] = sandCell;
             }
         }
 

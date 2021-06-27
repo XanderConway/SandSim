@@ -5,7 +5,7 @@ public class GridManage : MonoBehaviour
 {
 
     const int gridx = 198;
-    const int gridy = 108 * 2;
+    const int gridy = 108;
     Cell[,] grid = new Cell[gridx, gridy];
     Color[] col_grid = new Color[gridx * gridy];
 
