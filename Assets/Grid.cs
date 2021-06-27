@@ -72,6 +72,8 @@ public class Grid
             if (types.Contains(grid[x2, y2].type))
             {
                 grid[x1, y1].updated = true;
+                grid[x1, y1].stilled = 0;
+                grid[x2, y2].stilled = 0;
                 Cell temp = grid[x1, y1];
                 grid[x1, y1] = grid[x2, y2];
                 grid[x2, y2] = temp;
@@ -111,7 +113,7 @@ public class Grid
         return false;
     }
 
-    public bool check(int x, int y, List<int> states)
+    public bool check(int x, int y, HashSet<int> states)
     {
         if (in_bound(x, y) && states.Contains(grid[x, y].type))
         {

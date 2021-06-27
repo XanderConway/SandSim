@@ -98,9 +98,9 @@ public class GridManage3 : MonoBehaviour
                 int circle_posx = x + (int)mousepos.x;
                 int circle_posy = gridy - 1 - (int)mousepos.y + y;
 
-                if (grid.in_bound(circle_posx, circle_posy) && grid.grid[circle_posx, circle_posy].type != 1)
+                if (grid.in_bound(circle_posx, circle_posy) && grid.grid[circle_posx, circle_posy].type != 2)
                 {
-                    WaterCell water = new WaterCell(new Color(0.2f, 0.2f, 0.9f), 1, mouse_vel);
+                    WaterCell water = new WaterCell(new Color(0.2f, 0.2f, 0.9f), 2, mouse_vel);
                     grid.grid[circle_posx, circle_posy] = water;
                 }
             }

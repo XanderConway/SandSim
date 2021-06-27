@@ -5,10 +5,18 @@ using UnityEngine;
 public class WaterCell : Cell
 {
     int flowspeed = 8;
+    private Color water_color;
+    private Color splash_color = new Color(1, 1, 1);
     public WaterCell() : base() { }
-    public WaterCell(Color col, int type) : base(col, type) { }
+    public WaterCell(Color col, int type) : base(col, type) 
+    {
+        this.water_color = col;
+    }
 
-    public WaterCell(Color col, int type, Vector2 vel) : base(col, type, vel) { }
+    public WaterCell(Color col, int type, Vector2 vel) : base(col, type, vel) 
+    {
+        this.water_color = col;
+    }
 
     //For flowing, once a cell is flowing in a direction, it shouldn't try to move back to the space it once occupied
     // 0 =uncommited
@@ -25,6 +33,14 @@ public class WaterCell : Cell
             return;
         }
 
+        if(grid.check(x, y - 1, new HashSet<int> { 0 }))
+        {
+            this.col = this.splash_color;
+        } else
+        {
+            this.col = this.water_color;
+        }
+
         int xVel = (int)grid.grid[x, y].vel.x;
         int yVel = (int)grid.grid[x, y].vel.y;
 
@@ -36,10 +52,14 @@ public class WaterCell : Cell
         int newy = y;
 
         int flowspeed = 20;
+        
+        //Did the cell actually get anywhere?
 
         if (ysign != 0)
         {
-            for (int movey = 0; movey < yVel ; movey++)
+
+            //fall while you still can fall or potentially flow to fall later
+            for (int movey = 0; movey < yVel && flowspeed > 0; movey++)
             {
                 if (grid.swap(newx, newy, newx, newy + ysign))
                 {
@@ -57,6 +77,10 @@ public class WaterCell : Cell
                 } 
                 else
                 {
+
+                    //flowing shouldn't count as a fall
+                    movey -= 1;
+
                     if(commited == 0)
                     {
                         if (grid.swap(newx, newy, newx - 1, newy))
@@ -71,6 +95,7 @@ public class WaterCell : Cell
                         } else
                         {
                             grid.grid[newx, newy].vel.y = 0;
+                            flowspeed = 0;
                             break;
                         }
                     } 
@@ -84,6 +109,7 @@ public class WaterCell : Cell
                         {
                             commited = 0;
                             grid.grid[newx, newy].vel.y = 0;
+                            flowspeed = 0;
                             break;
                         }
                     }
@@ -97,6 +123,7 @@ public class WaterCell : Cell
                         {
                             commited = 0;
                             grid.grid[newx, newy].vel.y = 0;
+                            flowspeed = 0;
                             break;
                         }
                     }
@@ -152,6 +179,5 @@ public class WaterCell : Cell
 
         grid.grid[newx, newy].updated = true;
     }
-
 }
 

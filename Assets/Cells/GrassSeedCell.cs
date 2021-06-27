@@ -54,7 +54,7 @@ public class GrassSeedCell : Cell
                     {
                         grid.grid[newx, newy].vel.y = 0;
 
-                        if (grid.check(x, y + 1, new List<int> { 1 }))
+                        if (grid.check(x, y + 1, new HashSet<int> { 1 }))
                         {
                             this.col = grass_color;
                             planted = true;
@@ -83,7 +83,7 @@ public class GrassSeedCell : Cell
         }
         else
         {
-            if (this.height > 0 && grid.check(x, y - 1, new List<int> { 0 }))
+            if (this.height > 0 && grid.check(x, y - 1, new HashSet<int> { 0 }))
             {
                 time += Time.deltaTime;
                 if (time > 0.3f)

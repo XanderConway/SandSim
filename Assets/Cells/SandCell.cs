@@ -67,7 +67,7 @@ public class SandCell : Cell
 
 
                     //friction
-                    if (grid.check(newx, newy + 1, new List<int> { 1 }))
+                    if (grid.check(newx, newy + 1, new HashSet<int> { 1 }))
                     {
 
                         //grid[newx, newy].vel.x -= 0.05f * xsign;

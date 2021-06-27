@@ -58,13 +58,13 @@ public class TreeCell : Cell
 
             if (grow_x)
             {
-                if (grid.check(x + xsign, y, new List<int> { 0 }))
+                if (grid.check(x + xsign, y, new HashSet<int> { 0 }))
                 {
                     grid.grid[x + xsign, y] = new TreeCell(grow_dir, grow_history, height - 1, width -= 1);
                 }
             } else
             {
-                if (grid.check(x, y + ysign, new List<int> { 0 }))
+                if (grid.check(x, y + ysign, new HashSet<int> { 0 }))
                 {
                     grid.grid[x, y + ysign] = new TreeCell(grow_dir, grow_history, height - 1, width -= 1);
                 }
