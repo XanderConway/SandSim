@@ -2,40 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SandCell : Cell
+public class SmokeCell : Cell
 {
-    Color dirt;
-    Color grass = new Color(0.2f, 0.8f, 0.4f);
-    public SandCell() : base() { }
-    public SandCell(Color col, int weight) : base(col, 1) 
+    int flowspeed = 8;
+    public SmokeCell(Color col, int weight, Vector2 vel) : base(col, 2, vel) 
     {
+        this.col = col;
         this.weight = weight;
-        dirt = col;
+        this.id = 7;
     }
 
-    public SandCell(Color col, int weight, Vector2 vel) : base(col, 1, vel) 
-    {
-        this.weight = weight;
-        dirt = col;
-    }
+    //For flowing, once a cell is flowing in a direction, it shouldn't try to move back to the space it once occupied
+    // 0 =uncommited
+    // 1 = commited right
+    // 2 = commited left
+    int commited = 0;
 
     //Move the references space in accordance to the cells movement characteristics
     public override void move(short x, short y)
     {
 
-        if(this.updated)
+        if (this.updated)
         {
             return;
         }
 
-        if(!Grid.check_any(x, y - 1) || !Grid.check_any(x, y - 2))
-        {
-            this.col = grass;
-        } else
-        {
-            this.col = dirt;
-        }
-         
+
         int xVel = (int)Grid.grid[x, y].vel.x;
         int yVel = (int)Grid.grid[x, y].vel.y;
 
@@ -87,11 +79,11 @@ public class SandCell : Cell
                     //if (grid.check(newx, newy + 1, new HashSet<int> { 1 }))
                     //{
 
-                        //grid[newx, newy].vel.x -= 0.05f * xsign;
-                        //if (Mathf.Abs(grid[newx, newy].vel.x) < 0)
-                        //{
-                        //    grid[newx, newy].vel.x = 0;
-                        //}
+                    //grid[newx, newy].vel.x -= 0.05f * xsign;
+                    //if (Mathf.Abs(grid[newx, newy].vel.x) < 0)
+                    //{
+                    //    grid[newx, newy].vel.x = 0;
+                    //}
                     //}
                 }
                 else
@@ -106,6 +98,5 @@ public class SandCell : Cell
 
         Grid.grid[newx, newy].updated = true;
     }
-
 }
 

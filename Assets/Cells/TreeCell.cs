@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class TreeCell : Cell
 {
-    Color bark = new Color(0.5f, 0.3f, 0.2f);
+    Color bark = new Color(0.4f, 0.2f, 0.1f);
     Vector2 grow_dir;
+    bool planted = false;
+
+    float grow_timer = 0;
 
     //How many cells have been moved previously (used to align with velocity)
     Vector2 grow_history;
@@ -16,59 +19,151 @@ public class TreeCell : Cell
     //branch length
     int height = 50;
 
-    public TreeCell(Vector2 grow_vel, Vector2 grow_history, int height, int width)
+    public TreeCell(Vector2 vel, int height, int width, Vector2 grow_dir, Vector2 grow_history, bool planted)
     {
-        this.grow_history = grow_history;
-        this.grow_dir = grow_vel;
-        this.width = width;
         this.height = height;
         this.col = bark;
+        this.vel = vel;
+        this.planted = planted;
+        this.id = 3;
+        this.weight = 3;
+        this.grow_history = grow_history;
+        this.grow_dir = grow_dir;
+        this.width = width;
+        this.flammability = 20;
     }
 
-    public override void move(ref Grid grid, int x, int y)
+    public override void move(short x, short y)
     {
 
+        if (Grid.grid[x,y].updated)
+        {
+            return;
+        }
 
-        //if (height < 1)
-        //{
-        //    return;
-        //}
 
-        //int xsign = (int)Mathf.Sign(grow_dir.x);
-        //int ysign = (int)Mathf.Sign(grow_dir.y);
+        if (!this.planted)
+        {
 
-        //if (xsign != 0 || ysign != 0)
-        //{
-        //    // Will this cell grow in the x or y direction ?
-        //    bool grow_x = true;
+            if (Grid.check(x, y + 1, 1))
+            {
+                this.planted = true;
+            }
 
-        //    float true_ratio = ysign == 0 ? grow_dir.x + 1 : grow_dir.x / grow_dir.y;
-        //    float history_ratio = grow_history.y == 0 ? grow_history.x + 1 : grow_history.x / grow_history.y;
+            int xVel = (int)Grid.grid[x, y].vel.x;
+            int yVel = (int)Grid.grid[x, y].vel.y;
 
-        //    if (Mathf.Abs(true_ratio) > Mathf.Abs(history_ratio))
-        //    {
-        //        grow_history.y += 1;
-        //        grow_x = false;
-        //    }
-        //    else
-        //    {
-        //        grow_history.x += 1;
-        //        grow_history.y = 0;
-        //    }
+            //The direction
+            int ysign = (int)Mathf.Sign(yVel);
+            int xsign = (int)Mathf.Sign(xVel);
 
-        //    if (grow_x)
-        //    {
-        //        if (grid.check(x + xsign, y, new HashSet<int> { 0 }))
-        //        {
-        //            grid.grid[x + xsign, y] = new TreeCell(grow_dir, grow_history, height - 1, width -= 1);
-        //        }
-        //    } else
-        //    {
-        //        if (grid.check(x, y + ysign, new HashSet<int> { 0 }))
-        //        {
-        //            grid.grid[x, y + ysign] = new TreeCell(grow_dir, grow_history, height - 1, width -= 1);
-        //        }
-        //    }
-        //}
+            int newx = x;
+            int newy = y;
+
+            if (ysign != 0)
+            {
+                for (int movey = 0; movey < Mathf.Abs(yVel); movey++)
+                {
+                    if (Grid.swap(newx, newy, newx, newy + ysign))
+                    {
+                        newy += ysign;
+                    }
+                    else
+                    {
+                        //Grid.pass_velocity(newx, newy + ysign, Grid.grid[newx, newy].vel * Vector2.up);
+                        //Grid.grid[newx, newy].vel.y = 0;
+                        break;
+                    }
+                }
+
+            }
+
+            if (xsign != 0)
+            {
+                for (int movex = 0; movex < Mathf.Abs(xVel); movex += 1)
+                {
+                    if (Grid.swap(newx, newy, newx + xsign, newy))
+                    {
+                        newx += xsign;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            Grid.grid[newx, newy].updated = true;
+        } else
+        {
+
+            //Branching
+            //if(this.height > 30 && this.width > 1)
+            //{
+
+            //}
+
+            //Upward Growth
+            if (this.height > 1)
+            {
+
+
+                int next_x = x;
+                int next_y = y;
+
+                if (grow_dir.x == 0)
+                {
+                    next_x = x;
+                    next_y = y - (int)Mathf.Sign(grow_dir.y);
+                }
+                else if (grow_dir.y == 0)
+                {
+                    next_y = y;
+                    next_x = x - (int)Mathf.Sign(grow_dir.x);
+                }
+                else
+                {
+
+                    float slope = Mathf.Abs(grow_dir.y / grow_dir.x);
+                    float history_ratio = Mathf.Abs(grow_history.y / grow_history.x);
+
+                    if (history_ratio < slope)
+                    {
+                        next_x = x;
+                        next_y = y - (int)Mathf.Sign(grow_dir.y);
+                    }
+                    else
+                    {
+                        next_y = y;
+                        next_x = x - (int)Mathf.Sign(grow_dir.x);
+                    }
+                }
+
+                if (Grid.in_bound(next_x, next_y) && (!Grid.check_any(next_x, next_y) || Grid.check(next_x, next_y, 3)))
+                {
+                    this.grow_history.x += Mathf.Abs(next_x - x);
+                    this.grow_history.y += Mathf.Abs(next_y - y);
+
+                    Grid.grid[next_x, next_y] = new TreeCell(new Vector2(0, 0), this.height - 1, this.width, this.grow_dir, this.grow_history, true);
+                    this.height = 0;
+                }
+
+            }
+
+            //Outwards expansion
+            if (this.width > 0)
+            {
+                if (Grid.in_bound(x + 1, y) && !Grid.check_any(x + 1, y))
+                {
+                    Grid.grid[x + 1, y] = new TreeCell(new Vector2(0, 0), 0, this.width - 1, new Vector2(0, 0), new Vector2(1, 1), true);
+                }
+
+                if (Grid.in_bound(x - 1, y) && !Grid.check_any(x - 1, y))
+                {
+                    Grid.grid[x - 1, y] = new TreeCell(new Vector2(0, 0), 0, this.width - 1, new Vector2(0, 0), new Vector2(1, 1), true);
+                }
+            }
+
+        }
     }
 }

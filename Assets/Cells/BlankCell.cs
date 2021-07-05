@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class BlankCell : Cell
 {
-    public override void move(ref Grid grid, int x, int y)
+    public BlankCell()
+    {
+
+        //this.flammability = 5;
+    }
+    public override void move(short x, short y)
     {
 
     }

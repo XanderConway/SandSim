@@ -8,14 +8,16 @@ public class WaterCell : Cell
     private Color water_color;
     private Color splash_color = new Color(1, 1, 1);
     public WaterCell() : base() { }
-    public WaterCell(Color col, int type) : base(col, type) 
+    public WaterCell(Color col, int weight) : base(col, 2) 
     {
         this.water_color = col;
+        this.weight = weight;
     }
 
-    public WaterCell(Color col, int type, Vector2 vel) : base(col, type, vel) 
+    public WaterCell(Color col, int weight, Vector2 vel) : base(col, 2, vel) 
     {
         this.water_color = col;
+        this.weight = weight;
     }
 
     //For flowing, once a cell is flowing in a direction, it shouldn't try to move back to the space it once occupied
@@ -25,7 +27,7 @@ public class WaterCell : Cell
     int commited = 0;
 
     //Move the references space in accordance to the cells movement characteristics
-    public override void move(ref Grid grid, int x, int y)
+    public override void move(short x, short y)
     {
 
         if (this.updated)
@@ -33,7 +35,7 @@ public class WaterCell : Cell
             return;
         }
 
-        if(!grid.check_any(x, y - 1))
+        if(!Grid.check_any(x, y - 1))
         {
             this.col = this.splash_color;
         } else
@@ -41,8 +43,8 @@ public class WaterCell : Cell
             this.col = this.water_color;
         }
 
-        int xVel = (int)grid.grid[x, y].vel.x;
-        int yVel = (int)grid.grid[x, y].vel.y;
+        int xVel = (int)Grid.grid[x, y].vel.x;
+        int yVel = (int)Grid.grid[x, y].vel.y;
 
         //The direction
         int ysign = (int)Mathf.Sign(yVel);
@@ -61,16 +63,16 @@ public class WaterCell : Cell
             //fall while you still can fall or potentially flow to fall later
             for (int movey = 0; movey < yVel && flowspeed > 0; movey++)
             {
-                if (grid.swap(newx, newy, newx, newy + ysign))
+                if (Grid.swap(newx, newy, newx, newy + ysign))
                 {
                     newy += ysign;
                 }
-                else if (grid.swap(newx, newy, newx + 1, newy + ysign))
+                else if (Grid.swap(newx, newy, newx + 1, newy + ysign))
                 {
                     newy += ysign;
                     newx += 1;
                 }
-                else if (grid.swap(newx, newy, newx - 1, newy + ysign))
+                else if (Grid.swap(newx, newy, newx - 1, newy + ysign))
                 {
                     newy += ysign;
                     newx -= 1;
@@ -83,46 +85,46 @@ public class WaterCell : Cell
 
                     if(commited == 0)
                     {
-                        if (grid.swap(newx, newy, newx - 1, newy))
+                        if (Grid.swap(newx, newy, newx - 1, newy))
                         {
                             newx -= 1;
                             commited = 1;
                         } 
-                        else if (grid.swap(newx, newy, newx + 1, newy))
+                        else if (Grid.swap(newx, newy, newx + 1, newy))
                         {
                             newx += 1;
                             commited = 2;
                         } else
                         {
-                            grid.grid[newx, newy].vel.y = 0;
+                            Grid.grid[newx, newy].vel.y = 0;
                             flowspeed = 0;
                             break;
                         }
                     } 
                     else if(commited == 1)
                     {
-                        if (grid.swap(newx, newy, newx - 1, newy))
+                        if (Grid.swap(newx, newy, newx - 1, newy))
                         {
                             newx -= 1;
                         } 
                         else
                         {
                             commited = 0;
-                            grid.grid[newx, newy].vel.y = 0;
+                            Grid.grid[newx, newy].vel.y = 0;
                             flowspeed = 0;
                             break;
                         }
                     }
                     else if (commited == 2)
                     {
-                        if (grid.swap(newx, newy, newx + 1, newy))
+                        if (Grid.swap(newx, newy, newx + 1, newy))
                         {
                             newx += 1;
                         }
                         else
                         {
                             commited = 0;
-                            grid.grid[newx, newy].vel.y = 0;
+                            Grid.grid[newx, newy].vel.y = 0;
                             flowspeed = 0;
                             break;
                         }
@@ -151,7 +153,7 @@ public class WaterCell : Cell
         {
             for (int movex = 0; movex < Mathf.Abs(xVel); movex += 1)
             {
-                if (grid.swap(newx, newy, newx + xsign, newy))
+                if (Grid.swap(newx, newy, newx + xsign, newy))
                 {
                     newx += xsign;
 
@@ -171,13 +173,13 @@ public class WaterCell : Cell
                 {
 
                     //grid.pass_velocity(newx + xsign, newy, grid.grid[newx, newy].vel * Vector2.right);
-                    grid.grid[newx, newy].vel.x = 0;
+                    Grid.grid[newx, newy].vel.x = 0;
                     break;
                 }
             }
         }
 
-        grid.grid[newx, newy].updated = true;
+        Grid.grid[newx, newy].updated = true;
     }
 }
 

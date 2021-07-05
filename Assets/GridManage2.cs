@@ -32,7 +32,7 @@ public class GridManage2 : MonoBehaviour
     {
 
         SandCell sandCell = new SandCell(new Color(0.8f, 0.6f, 0.4f, 1), 1, new Vector2(0,0));
-        sandCell.type = 1;
+        sandCell.id = 1;
         sandCell.col = new Color(0.8f, 0.6f, 0.4f, 1);
         sandCell.vel = new Vector2(0, 0);
 
@@ -75,7 +75,7 @@ public class GridManage2 : MonoBehaviour
                     int circle_posx = x + (int)mousepos.x;
                     int circle_posy = gridy - 1 - (int)mousepos.y + y;
 
-                    if (in_bound(circle_posx, circle_posy) && grid[circle_posx, circle_posy].type != 1)
+                    if (in_bound(circle_posx, circle_posy) && grid[circle_posx, circle_posy].id != 1)
                     {
                         grid[circle_posx, circle_posy] = sandCell;
                     }
@@ -109,7 +109,7 @@ public class GridManage2 : MonoBehaviour
                     int circle_posx = x + (int)mousepos.x;
                     int circle_posy = gridy - 1 - (int)mousepos.y + y;
 
-                    if (in_bound(circle_posx, circle_posy) && grid[circle_posx, circle_posy].type != 2)
+                    if (in_bound(circle_posx, circle_posy) && grid[circle_posx, circle_posy].id != 2)
                     {
                         grid[circle_posx, circle_posy] = water_cell;
                     }
@@ -149,12 +149,13 @@ public class GridManage2 : MonoBehaviour
         texture = new Texture2D(gridx, gridy);
         texture.filterMode = FilterMode.Point;
 
+        BlankCell blankCell = new BlankCell();
         SandCell sandCell = new SandCell(new Color(0.8f, 0.6f, 0.4f, 1), 1, new Vector2(0, 0));
         for (int x = 0; x < gridx; x++)
         {
             for (int y = 0; y < gridy; y++)
             {
-                grid[x, y] = sandCell;
+                grid[x, y] = blankCell;
             }
         }
 
@@ -230,7 +231,7 @@ public class GridManage2 : MonoBehaviour
             return;
         }
 
-        int type = grid[r, c].type;
+        int type = grid[r, c].id;
 
         if (type == 1)
         {
@@ -420,7 +421,7 @@ public class GridManage2 : MonoBehaviour
         if (in_bound(x1, y1) && in_bound(x2, y2))
         {
 
-            if (grid[x2, y2].type == 0)
+            if (grid[x2, y2].id == 0)
             {
                 grid[x1, y1].updated = true;
                 Cell temp = grid[x1, y1];
@@ -438,7 +439,7 @@ public class GridManage2 : MonoBehaviour
     {
         if (in_bound(x1, y1) && in_bound(x2, y2))
         {
-            if (swapable.Contains(grid[x2, y2].type))
+            if (swapable.Contains(grid[x2, y2].id))
             {
                 Cell temp = grid[x1, y1];
                 grid[x1, y1] = grid[x2, y2];
@@ -459,7 +460,7 @@ public class GridManage2 : MonoBehaviour
 
     bool check(int x, int y, List<int> states)
     {
-        if (0 <= x && x < gridx && 0 <= y && y < gridy && states.Contains(grid[x, y].type))
+        if (0 <= x && x < gridx && 0 <= y && y < gridy && states.Contains(grid[x, y].id))
         {
             return true;
         }
@@ -471,7 +472,7 @@ public class GridManage2 : MonoBehaviour
 
     bool check(int x, int y)
     {
-        if (0 <= x && x < gridx && 0 <= y && y < gridy && grid[x, y].type == 0)
+        if (0 <= x && x < gridx && 0 <= y && y < gridy && grid[x, y].id == 0)
         {
             return true;
         }

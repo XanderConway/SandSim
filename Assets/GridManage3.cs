@@ -10,6 +10,8 @@ public class GridManage3 : MonoBehaviour
     // Start is called before the first frame update
     Texture2D texture;
 
+    public Vector2 tree_grow = new Vector2(2, 10);
+
     Grid grid;
     void Start()
     {
@@ -37,15 +39,15 @@ public class GridManage3 : MonoBehaviour
     Vector2 mouse_pos_new = new Vector2(0, 0);
     void mouse_control()
     {
-
         Vector2 mousepos = Input.mousePosition / new Vector2(Screen.width, Screen.height) * new Vector2(gridx, gridy);
-
         mouse_pos_old = mouse_pos_new;
         mouse_pos_new = mousepos;
+        Vector2 mouse_vel = (mouse_pos_new - mouse_pos_old) / Time.deltaTime / new Vector2(Screen.width, Screen.height) * new Vector2(gridx, -gridy) / 70;
+        int mousex = (int)mousepos.x;
+        int mousey = gridy - 1 - (int)mousepos.y;
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetKey(KeyCode.Alpha1))
         {
-            Vector2 mouse_vel = (mouse_pos_new - mouse_pos_old) / Time.deltaTime / new Vector2(Screen.width, Screen.height) * new Vector2(gridx, -gridy) / 70;
             if (0 <= (int)(mousepos.x) && (int)(mousepos.x) < gridx && 0 <= (int)(mousepos.y) && (int)(mousepos.y) < gridy)
             {
 
@@ -53,7 +55,7 @@ public class GridManage3 : MonoBehaviour
                 {
                     float brightness = Random.Range(0, -0.1f);
                     Color colour = new Color(139 / 255f + brightness, 69 / 255f + brightness, 19 / 255f + brightness, 1);
-                    SandCell sandCell = new SandCell(colour, 2, mouse_vel);
+                    SandCell sandCell = new SandCell(colour, 5, mouse_vel);
 
                     //forget random circle for now
                     float a = Random.Range(0, 1) * 2 * Mathf.PI;
@@ -68,21 +70,18 @@ public class GridManage3 : MonoBehaviour
                     int circle_posx = x + (int)mousepos.x;
                     int circle_posy = gridy - 1 - (int)mousepos.y + y;
 
-                    if (grid.in_bound(circle_posx, circle_posy) && grid.grid[circle_posx, circle_posy].type != 2)
+                    if (Grid.in_bound(circle_posx, circle_posy) && Grid.grid[circle_posx, circle_posy].id == 0)
                     {
-                        grid.grid[circle_posx, circle_posy] = sandCell;
+                        Grid.grid[circle_posx, circle_posy] = sandCell;
                     }
                 }
             }
         }
 
 
-        if (Input.GetMouseButton(1))
+        if (Input.GetKey(KeyCode.Alpha2))
         {
-            int mousex = (int)mousepos.x;
-            int mousey = gridy - 1 - (int)mousepos.y;
 
-            Vector2 mouse_vel = (mouse_pos_new - mouse_pos_old) / Time.deltaTime / new Vector2(Screen.width, Screen.height) * new Vector2(gridx, -gridy) / 70;
             for (int i = 0; i < 10; i++)
             {
                 //forget random circle for now
@@ -98,21 +97,58 @@ public class GridManage3 : MonoBehaviour
                 int circle_posx = x + (int)mousepos.x;
                 int circle_posy = gridy - 1 - (int)mousepos.y + y;
 
-                if (grid.in_bound(circle_posx, circle_posy) && grid.grid[circle_posx, circle_posy].type != 1)
+                if (Grid.in_bound(circle_posx, circle_posy) && Grid.grid[circle_posx, circle_posy].id == 0)
                 {
                     WaterCell water = new WaterCell(new Color(0.2f, 0.2f, 0.9f), 1, mouse_vel);
-                    grid.grid[circle_posx, circle_posy] = water;
+                    Grid.grid[circle_posx, circle_posy] = water;
                 }
             }
         }
 
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Alpha3))
+        {
+
+            Vector2 tree_vel = new Vector2(Random.Range(-20, 20), 100);
+            int height = Random.Range(100, 150);
+            TreeCell tree = new TreeCell(mouse_vel, height, height / 50, tree_vel, new Vector2(1,1), false);
+
+            if (Grid.in_bound(mousex, mousey) && Grid.grid[mousex, mousey].id == 0)
+            {
+                Grid.grid[mousex, mousey] = tree;
+            }
+        }
+
+
+        if (Input.GetKey(KeyCode.Alpha0))
+        {
+            BlankCell blankCell = new BlankCell();
+
+            if (Grid.in_bound(mousex, mousey))
+            {
+                Grid.grid[mousex, mousey] = blankCell;
+            }
+        }
+
+        if (Input.GetKey(KeyCode.Alpha5))
+        {
+
+            FireCell fireCell = new FireCell(new Color(1f, 0.6f, 0.1f), 0.3f, 50);
+
+
+            if (Grid.in_bound(mousex, mousey))
+            {
+                Grid.grid[mousex, mousey] = fireCell;
+            }
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             for(int x = 0; x < gridx; x++)
             {
                 for(int y = 0; y < gridy; y++)
                 {
-                    grid.grid[x, y] = new BlankCell();
+                    Grid.grid[x, y] = new BlankCell();
                 }
             }
         }
@@ -126,7 +162,7 @@ public class GridManage3 : MonoBehaviour
         texture = new Texture2D(gridx, gridy);
         texture.filterMode = FilterMode.Point;
 
-        grid = new Grid(gridx, gridy);
+        Grid.init_grid(gridx, gridy);
 
         //grid[0, 0] = sandCell;
         //grid[gridx / 2, gridy / 2] = sandCell;
@@ -142,27 +178,30 @@ public class GridManage3 : MonoBehaviour
 
         if (update_from_left)
         {
-            for (int r = 0; r < gridx; r++)
+            for (short r = 0; r < gridx; r++)
             {
-                for (int c = 0; c < gridy; c++)
+                for (short c = 0; c < gridy; c++)
                 {
 
-                    grid.grid[r, c].vel += new Vector2(0, 0.4f);
-                    grid.grid[r, c].move(ref grid, r, c);
+                    Grid.grid[r, c].vel += new Vector2(0, 0.4f);
+                    if (Grid.grid[r, c].id != 0  && !Grid.grid[r,c].updated)
+                    {
+                        Grid.grid[r, c].move(r, c);
+                    }
                 }
             }
         }
         else
         {
-            for (int r = gridx - 1; r >= 0; r--)
+            for (short r = gridx - 1; r >= 0; r--)
             {
-                for (int c = gridy - 1; c >= 0; c--)
+                for (short c = gridy - 1; c >= 0; c--)
                 {
 
-                    grid.grid[r, c].vel += new Vector2(0, 0.4f);
-                    if(grid.grid[r, c].type != 0)
+                    Grid.grid[r, c].vel += new Vector2(0, 0.4f);
+                    if(Grid.grid[r, c].id != 0 && !Grid.grid[r, c].updated)
                     {
-                        grid.grid[r, c].move(ref grid, r, c);
+                        Grid.grid[r, c].move(r, c);
                     }
                 }
             }
@@ -171,16 +210,16 @@ public class GridManage3 : MonoBehaviour
         update_from_left = !update_from_left;
 
         //reset
-        for (int x = 0; x < gridx; x++)
+        for (short x = 0; x < gridx; x++)
         {
-            for (int y = 0; y < gridy; y++)
+            for (short y = 0; y < gridy; y++)
             {
-                grid.grid[x, y].updated = false;
+                Grid.grid[x, y].updated = false;
             }
         }
 
-        grid.update_colour();
-        texture.SetPixels(grid.col_grid);
+        Grid.update_colour();
+        texture.SetPixels(Grid.col_grid);
         texture.Apply();
     }
 }
