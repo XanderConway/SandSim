@@ -145,6 +145,7 @@ public class TreeCell : Cell
                     this.grow_history.y += Mathf.Abs(next_y - y);
 
                     Grid.grid[next_x, next_y] = new TreeCell(new Vector2(0, 0), this.height - 1, this.width, this.grow_dir, this.grow_history, true);
+                    Grid.grid[next_x, next_y].updated = true;
                     this.height = 0;
                 }
 

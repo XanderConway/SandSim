@@ -12,6 +12,7 @@ public abstract class Cell
     public bool destroy_on_contact = false;
     public int weight;
     public byte flammability = 0;
+    public bool solid = true;
 
     //TODO why not make the grid reference a property?
 

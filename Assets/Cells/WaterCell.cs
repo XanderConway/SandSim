@@ -61,7 +61,7 @@ public class WaterCell : Cell
         {
 
             //fall while you still can fall or potentially flow to fall later
-            for (int movey = 0; movey < yVel && flowspeed > 0; movey++)
+            for (int movey = 0; movey < Mathf.Abs(yVel) && flowspeed > 0; movey++)
             {
                 if (Grid.swap(newx, newy, newx, newy + ysign))
                 {

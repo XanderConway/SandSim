@@ -27,6 +27,7 @@ public class SmokeCell : Cell
             return;
         }
 
+        this.vel.y -= 0.8f;
 
         int xVel = (int)Grid.grid[x, y].vel.x;
         int yVel = (int)Grid.grid[x, y].vel.y;
@@ -38,9 +39,15 @@ public class SmokeCell : Cell
         int newx = x;
         int newy = y;
 
+        int flowspeed = 3;
+
+        //Did the cell actually get anywhere?
+
         if (ysign != 0)
         {
-            for (int movey = 0; movey < Mathf.Abs(yVel); movey++)
+
+            //fall while you still can fall or potentially flow to fall later
+            for (int movey = 0; movey < Mathf.Abs(yVel) && flowspeed > 0; movey++)
             {
                 if (Grid.swap(newx, newy, newx, newy + ysign))
                 {
@@ -58,42 +65,75 @@ public class SmokeCell : Cell
                 }
                 else
                 {
-                    //Grid.pass_velocity(newx, newy + ysign, Grid.grid[newx, newy].vel * Vector2.up);
-                    //Grid.grid[newx, newy].vel.y = 0;
-                    break;
+
+                    //flowing shouldn't count as a fall
+                    movey -= 1;
+
+                    if (commited == 0)
+                    {
+                        if (Grid.swap(newx, newy, newx - 1, newy))
+                        {
+                            newx -= 1;
+                            commited = 1;
+                        }
+                        else if (Grid.swap(newx, newy, newx + 1, newy))
+                        {
+                            newx += 1;
+                            commited = 2;
+                        }
+                        else
+                        {
+                            //Grid.grid[newx, newy].vel.y = 0;
+                            flowspeed = 0;
+                            break;
+                        }
+                    }
+                    else if (commited == 1)
+                    {
+                        if (Grid.swap(newx, newy, newx - 1, newy))
+                        {
+                            newx -= 1;
+                        }
+                        else
+                        {
+                            commited = 0;
+                            //Grid.grid[newx, newy].vel.y = 0;
+                            flowspeed = 0;
+                            break;
+                        }
+                    }
+                    else if (commited == 2)
+                    {
+                        if (Grid.swap(newx, newy, newx + 1, newy))
+                        {
+                            newx += 1;
+                        }
+                        else
+                        {
+                            commited = 0;
+                            //Grid.grid[newx, newy].vel.y = 0;
+                            flowspeed = 0;
+                            break;
+                        }
+                    }
+
+                    flowspeed -= 1;
                 }
+                //else if(grid.swap(newx, newy, newx - 1, newy))
+                //{
+                //    newx -= 1;
+                //}
+                //else if (grid.swap(newx, newy, newx + 1, newy))
+                //{
+                //    newx += 1;
+                //}
+                //else
+                //{
+                //    grid.grid[newx, newy].vel.y = 0;
+                //    break;
+                //}
             }
 
-        }
-
-        if (xsign != 0)
-        {
-            for (int movex = 0; movex < Mathf.Abs(xVel); movex += 1)
-            {
-                if (Grid.swap(newx, newy, newx + xsign, newy))
-                {
-                    newx += xsign;
-
-
-                    //friction
-                    //if (grid.check(newx, newy + 1, new HashSet<int> { 1 }))
-                    //{
-
-                    //grid[newx, newy].vel.x -= 0.05f * xsign;
-                    //if (Mathf.Abs(grid[newx, newy].vel.x) < 0)
-                    //{
-                    //    grid[newx, newy].vel.x = 0;
-                    //}
-                    //}
-                }
-                else
-                {
-
-                    Grid.pass_velocity(newx + xsign, newy, Grid.grid[newx, newy].vel * Vector2.right);
-                    Grid.grid[newx, newy].vel.x = 0;
-                    break;
-                }
-            }
         }
 
         Grid.grid[newx, newy].updated = true;

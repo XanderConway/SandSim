@@ -4,25 +4,25 @@ using UnityEngine;
 
 public class Grid
 {
-    public static int gridx;
-    public static int gridy;
+    public static int width;
+    public static int height;
 
     public static Cell[,] grid;
     public static Color[] col_grid;
 
     public static void init_grid(int x, int y, bool fill = true)
     {
-        gridx = x;
-        gridy = y;
+        width = x;
+        height = y;
 
-        grid = new Cell[gridx, gridy];
-        col_grid = new Color[gridx * gridy];
+        grid = new Cell[width, height];
+        col_grid = new Color[width * height];
 
         if(fill)
         {
-            for (int r = 0; r < gridx; r++)
+            for (int r = 0; r < width; r++)
             {
-                for (int c = 0; c < gridy; c++)
+                for (int c = 0; c < height; c++)
                 {
                     grid[r, c] = new BlankCell();
                 }
@@ -32,18 +32,18 @@ public class Grid
 
     public static void update_colour()
     {
-        for (int x = 0; x < gridx; x++)
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < gridy; y++)
+            for (int y = 0; y < height; y++)
             {
-                col_grid[y * gridx + x] = grid[x, y].col;
+                col_grid[y * width + x] = grid[x, y].col;
             }
         }
     }
 
     public static bool in_bound(int x, int y)
     {
-        return 0 <= x && x < gridx && 0 <= y && y < gridy;
+        return 0 <= x && x < width && 0 <= y && y < height;
     }
 
 

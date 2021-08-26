@@ -99,7 +99,7 @@ public class GridManage3 : MonoBehaviour
 
                 if (Grid.in_bound(circle_posx, circle_posy) && Grid.grid[circle_posx, circle_posy].id == 0)
                 {
-                    WaterCell water = new WaterCell(new Color(0.2f, 0.2f, 0.9f), 1, mouse_vel);
+                    WaterCell water = new WaterCell(new Color(0.2f, 0.2f, 0.9f), 2, mouse_vel);
                     Grid.grid[circle_posx, circle_posy] = water;
                 }
             }
